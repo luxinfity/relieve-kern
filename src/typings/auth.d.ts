@@ -16,3 +16,14 @@ export interface ICredential {
 export interface ITokenable {
     user_id: string;
 }
+
+export interface IFirebaseToken {
+    uid: string;
+    email: string;
+    phone_number: string | null;
+    iss: string;
+    aud: string;
+    sub: string;
+    iat: number;
+    exp: number;
+}

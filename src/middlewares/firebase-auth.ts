@@ -1,39 +1,29 @@
 /// <reference types="../typings/express" />
 
 import { Request, Response, NextFunction } from 'express';
-import { HttpError } from 'tymon';
-import JWT from '../libs/jwt';
+import { HttpError, FirebaseContext } from 'tymon';
 import { IContext } from '../typings/common';
-import { ITokenable } from '../typings/auth';
+import { IFirebaseToken } from '../typings/auth';
 import { COMMON_ERRORS } from '../utils/constant';
 
-const jwtExpiredMessage = 'jwt expired';
-
-const generateContext = async (payload: ITokenable): Promise<IContext> => {
+const generateContext = async (payload: IFirebaseToken): Promise<IContext> => {
     return {
-        username: payload.user_id,
-        user_id: payload.user_id
+        email: payload.email,
+        phone: payload.phone_number || null,
+        user_id: payload.uid
     };
 };
 
 export default async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
-        const token: string | undefined = req.headers.authorization;
-        if (!token) {
+        const idToken: string | undefined = req.headers.authorization;
+        if (!idToken) {
             throw HttpError.NotAuthorized('token not provided', COMMON_ERRORS.TOKEN_INVALID);
         }
 
-        try {
-            const tokenPayload: ITokenable = await JWT.verifyToken(token);
-            req.context = await generateContext(tokenPayload);
-        } catch (err) {
-            const message =
-                err.message === jwtExpiredMessage
-                    ? ['token expired', COMMON_ERRORS.TOKEN_EXPIRED]
-                    : ['token invalid', COMMON_ERRORS.TOKEN_INVALID];
-
-            throw HttpError.NotAuthorized(...message);
-        }
+        const admin = await FirebaseContext.getInstance();
+        const payload = await admin.auth().verifyIdToken(idToken);
+        req.context = generateContext(payload);
 
         return next();
     } catch (err) {

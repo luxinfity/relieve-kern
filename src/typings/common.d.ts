@@ -19,7 +19,8 @@ export interface IPagination {
 }
 
 export interface IContext {
-    username: string;
+    email: string;
+    phone: string | null;
     user_id: string;
 }
 
