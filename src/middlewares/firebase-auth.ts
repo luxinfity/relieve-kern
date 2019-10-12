@@ -23,7 +23,7 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
 
         const admin = await FirebaseContext.getInstance();
         const payload = await admin.auth().verifyIdToken(idToken);
-        req.context = generateContext(payload);
+        req.context = await generateContext(payload);
 
         return next();
     } catch (err) {

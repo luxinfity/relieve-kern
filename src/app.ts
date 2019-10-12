@@ -1,4 +1,4 @@
-import { HttpError, MongoContext } from 'tymon';
+import { HttpError, MongoContext, FirebaseContext } from 'tymon';
 import { Application } from 'express';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
@@ -31,8 +31,11 @@ class App {
     private setupModules(): void {
         HttpError.initialize();
         MongoContext.initialize({
-            connection_string: '',
-            database: ''
+            connection_string: String(process.env.MONGO_CONNECTION_STRING),
+            database: 'relieve'
+        });
+        FirebaseContext.initialize({
+            service_account_path: './storage/firebase-service-account.json'
         });
     }
 
