@@ -1,4 +1,4 @@
-import { HttpError, DBContext } from 'tymon';
+import { HttpError, MongoContext } from 'tymon';
 import { Application } from 'express';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
@@ -32,9 +32,9 @@ class App {
 
     private setupModules(): void {
         HttpError.initialize();
-        DBContext.initialize({
-            connection_string: String(process.env.DB_CONNECTION_STRING),
-            models_path: '/src/models'
+        MongoContext.initialize({
+            connection_string: '',
+            database: ''
         });
     }
 
