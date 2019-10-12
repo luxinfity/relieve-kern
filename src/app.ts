@@ -5,7 +5,6 @@ import * as bodyParser from 'body-parser';
 import * as helmet from 'helmet';
 import * as cors from 'cors';
 
-import AuthController from './controllers/auth_controller';
 import ProfileController from './controllers/profile_controller';
 
 import ExceptionHandler from './middlewares/exception';
@@ -26,7 +25,6 @@ class App {
     }
 
     private setupControllers(): void {
-        this.app.use('/auth', new AuthController().getRoutes());
         this.app.use('/profile', new ProfileController().getRoutes());
     }
 
