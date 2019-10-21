@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 import * as axios from 'axios';
-import { promisify, reduce } from 'bluebird';
+import { promisify } from 'bluebird';
 import { parseString } from 'xml2js';
 
 import { Earthquake, Coordinates } from '../typings/models/earthquake';
