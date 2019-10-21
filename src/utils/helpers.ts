@@ -23,6 +23,13 @@ export const stringifyObjectKey = (object: IObject): IObject => {
     return object;
 };
 
+export const reduceData = (data: any): any => {
+    return Object.keys(data).reduce((res: any, key: string): any => {
+        res[key] = data[key][0];
+        return res;
+    }, {});
+};
+
 export default {
     parseDataObject,
     offset,

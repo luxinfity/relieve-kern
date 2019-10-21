@@ -9,6 +9,7 @@ import ProfileController from './controllers/profile_controller';
 
 import ExceptionHandler from './middlewares/exception';
 import NotFoundHandler from './middlewares/not_found';
+import EarthquakeController from './controllers/earthquake_controller';
 
 class App {
     private app: Application;
@@ -26,17 +27,18 @@ class App {
 
     private setupControllers(): void {
         this.app.use('/profile', new ProfileController().getRoutes());
+        this.app.use('/earthquake', new EarthquakeController().getRoutes());
     }
 
     private setupModules(): void {
         HttpError.initialize();
-        MongoContext.initialize({
-            connection_string: String(process.env.MONGO_CONNECTION_STRING),
-            database: 'relieve'
-        });
-        FirebaseContext.initialize({
-            service_account_path: './storage/firebase-service-account.json'
-        });
+        // MongoContext.initialize({
+        //     connection_string: String(process.env.MONGO_CONNECTION_STRING),
+        //     database: 'relieve'
+        // });
+        // FirebaseContext.initialize({
+        //     service_account_path: './storage/firebase-service-account.json'
+        // });
     }
 
     private setupPlugins(): void {
