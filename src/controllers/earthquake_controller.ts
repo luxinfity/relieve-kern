@@ -1,14 +1,17 @@
 import { HttpError } from 'tymon';
+import Queue from '../libs/queue';
 
 import BaseController from './base/base_controller';
-import { IData, IContext, IHandlerOutput } from '../typings/common';
+import { Data, Context, HandlerOutput } from '../typings/common';
 import BmkgRepository from '../repositories/bmkg_repository';
 
 export default class EarthquakeController extends BaseController {
-    public async getLastEarthquake(data: IData, context: IContext): Promise<IHandlerOutput> {
+    public async getLastEarthquake(data: Data, context: Context): Promise<HandlerOutput> {
         try {
             const bmkgRepo = new BmkgRepository();
             const earthquake = await bmkgRepo.getLastEarthquake();
+
+            await Queue.getInstance().dispatch('eat', { message: 'eat pussy' });
 
             return {
                 message: 'last bmkg earthquake retrieved',
@@ -20,7 +23,7 @@ export default class EarthquakeController extends BaseController {
         }
     }
 
-    public async getLastestEarthquake(data: IData, context: IContext): Promise<IHandlerOutput> {
+    public async getLastestEarthquake(data: Data, context: Context): Promise<HandlerOutput> {
         try {
             const bmkgRepo = new BmkgRepository();
             const earthquakes = await bmkgRepo.getLatestEarthquake();

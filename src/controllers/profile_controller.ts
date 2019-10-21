@@ -1,6 +1,6 @@
 import { HttpError } from 'tymon';
 
-import { IContext, IData, IHandlerOutput } from 'src/typings/common';
+import { Context, Data, HandlerOutput } from 'src/typings/common';
 import AuthMiddleware from '../middlewares/firebase-auth';
 import BaseController from './base/base_controller';
 
@@ -10,7 +10,7 @@ export default class ProfileController extends BaseController {
         this.setMiddleware(AuthMiddleware);
     }
 
-    public async getProfile(data: IData, context: IContext): Promise<IHandlerOutput> {
+    public async getProfile(data: Data, context: Context): Promise<HandlerOutput> {
         try {
             // logic
             return {

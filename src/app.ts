@@ -11,6 +11,8 @@ import ExceptionHandler from './middlewares/exception';
 import NotFoundHandler from './middlewares/not_found';
 import EarthquakeController from './controllers/earthquake_controller';
 
+import Queue from './libs/queue';
+
 class App {
     private app: Application;
     private port: number = 3000;
@@ -32,6 +34,10 @@ class App {
 
     private setupModules(): void {
         HttpError.initialize();
+        Queue.initialize({
+            connection_string: String(process.env.REDIS_CONNECTION_STRING),
+            jobs: ['eat', 'drink', 'sleep']
+        });
         // MongoContext.initialize({
         //     connection_string: String(process.env.MONGO_CONNECTION_STRING),
         //     database: 'relieve'

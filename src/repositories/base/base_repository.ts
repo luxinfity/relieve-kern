@@ -1,7 +1,7 @@
 import { DBContext, MongoContext, RedisContext, FirebaseContext, ElasticContext } from 'tymon';
-import { IContext } from '../../typings/common';
+import { Context } from '../../typings/common';
 
-type Context = IContext | null;
+type Context = Context | null;
 
 export class BaseRepository {
     public context: Context;

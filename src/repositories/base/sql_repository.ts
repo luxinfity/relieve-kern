@@ -1,9 +1,9 @@
 import BaseRepository from './base_repository';
-import { IContext, IPagination, IObject } from '../../typings/common';
+import { Context, Pagination, IObject } from '../../typings/common';
 import { offset } from '../../utils/helpers';
 
 type attributes = string[] | undefined;
-type Context = IContext | null;
+type Context = Context | null;
 
 export default class SQLRepo<Model, ModelFillable> extends BaseRepository {
     protected model: any;
@@ -63,7 +63,7 @@ export default class SQLRepo<Model, ModelFillable> extends BaseRepository {
         { page = 1, per_page = 10 },
         attributes?: attributes,
         order = [['created_at', 'desc']]
-    ): Promise<{ data: Model[]; meta: IPagination }> {
+    ): Promise<{ data: Model[]; meta: Pagination }> {
         const db = await this.getDbInstance();
         return db[this.model]
             .findAndCountAll({
@@ -73,7 +73,7 @@ export default class SQLRepo<Model, ModelFillable> extends BaseRepository {
                 offset: offset(page, per_page),
                 order
             })
-            .then(({ rows, count }: { rows: Model[]; count: number }): { data: Model[]; meta: IPagination } => ({
+            .then(({ rows, count }: { rows: Model[]; count: number }): { data: Model[]; meta: Pagination } => ({
                 data: rows,
                 meta: { page, per_page, total_page: Math.ceil(count / per_page), total_data: count }
             }));

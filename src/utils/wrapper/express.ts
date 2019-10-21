@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { OK } from 'http-status-codes';
-import { IContext, IData, methodHandler, IHttpOutput, IHandlerOutput } from '../../typings/common';
+import { Context, Data, methodHandler, HttpOutput, HandlerOutput } from '../../typings/common';
 
-const parseInput = (req: Request): IData => ({
+const parseInput = (req: Request): Data => ({
     query: req.query,
     params: req.params,
     body: req.body
@@ -14,10 +14,10 @@ export default (method: methodHandler): RequestHandler => async (
     next: NextFunction
 ): Promise<Response | void> => {
     try {
-        const data: IData = parseInput(req);
-        const context: IContext = req && req.context;
+        const data: Data = parseInput(req);
+        const context: Context = req && req.context;
 
-        const { message = 'success', data: outData = {}, status = OK, pagination }: IHandlerOutput = await method(
+        const { message = 'success', data: outData = {}, status = OK, pagination }: HandlerOutput = await method(
             data,
             context
         );
