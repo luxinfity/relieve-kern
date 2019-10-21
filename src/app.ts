@@ -1,11 +1,10 @@
-import { HttpError, DBContext } from 'tymon';
+import { HttpError, MongoContext, FirebaseContext } from 'tymon';
 import { Application } from 'express';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as helmet from 'helmet';
 import * as cors from 'cors';
 
-import AuthController from './controllers/auth_controller';
 import ProfileController from './controllers/profile_controller';
 
 import ExceptionHandler from './middlewares/exception';
@@ -26,15 +25,17 @@ class App {
     }
 
     private setupControllers(): void {
-        this.app.use('/auth', new AuthController().getRoutes());
         this.app.use('/profile', new ProfileController().getRoutes());
     }
 
     private setupModules(): void {
         HttpError.initialize();
-        DBContext.initialize({
-            connection_string: String(process.env.DB_CONNECTION_STRING),
-            models_path: '/src/models'
+        MongoContext.initialize({
+            connection_string: String(process.env.MONGO_CONNECTION_STRING),
+            database: 'relieve'
+        });
+        FirebaseContext.initialize({
+            service_account_path: './storage/firebase-service-account.json'
         });
     }
 
