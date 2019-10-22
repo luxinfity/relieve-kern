@@ -1,13 +1,12 @@
 import { HttpError } from 'tymon';
 import { Status as Tweet } from 'twitter-d';
-import * as Bluebird from 'bluebird';
 
 import Queue from '../libs/queue';
 import BaseController from './base/base_controller';
 import { Data, Context, HandlerOutput } from '../typings/common';
 import BmkgRepository from '../repositories/bmkg_repository';
 import { isEmptyArray } from '../utils/helpers';
-import { TWITTER_HASHTAG } from 'src/utils/constant';
+import { TWITTER_HASHTAG } from '../utils/constant';
 
 export default class EarthquakeController extends BaseController {
     public async tweetCallback(data: Data, context: Context): Promise<HandlerOutput> {

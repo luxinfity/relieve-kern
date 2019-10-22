@@ -5,7 +5,8 @@ export interface Coordinates {
 
 export interface Earthquake {
     datetime: string;
-    coordinates: Coordinates;
+    latitude: number;
+    longitude: number;
     magnitude: number;
     depth: number;
 }

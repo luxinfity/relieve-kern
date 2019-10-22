@@ -1,8 +1,16 @@
+import * as Bluebird from 'bluebird';
+
 import BmkgRepository from '../repositories/bmkg_repository';
-import { JobInput } from '../typings/common';
+import EarthquakeRepository from '../repositories/earthquake_repo';
 
 export default async (): Promise<void> => {
     const bmkgRepo = new BmkgRepository();
+    const earthquakeRepo = new EarthquakeRepository();
+
     const earthquakes = await bmkgRepo.getLatestEarthquake();
-    console.log(earthquakes[0]);
+    await Bluebird.map(
+        earthquakes,
+        (earthquake): Promise<void> => earthquakeRepo.upsert({ datetime: earthquake.datetime }, earthquake),
+        { concurrency: 10 }
+    );
 };

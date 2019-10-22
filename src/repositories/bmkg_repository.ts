@@ -40,12 +40,16 @@ export default class BmkgRepository {
             .then(({ data: xmlResult }): Promise<any> => this.parseXml(xmlResult))
             .then(({ Infogempa: { gempa: [latestParsed] } }): any => reduceData(latestParsed))
             .then(
-                (data: any): Earthquake => ({
-                    datetime: this.getDatetime(data),
-                    coordinates: this.getCoordinates(data),
-                    depth: this.getDepth(data),
-                    magnitude: this.getMagnitude(data)
-                })
+                (data: any): Earthquake => {
+                    const coordinates = this.getCoordinates(data);
+                    return {
+                        datetime: this.getDatetime(data),
+                        latitude: coordinates.latitude,
+                        longitude: coordinates.longitude,
+                        depth: this.getDepth(data),
+                        magnitude: this.getMagnitude(data)
+                    };
+                }
             );
     }
 
@@ -56,12 +60,16 @@ export default class BmkgRepository {
             .then(({ Infogempa: { gempa: feltParsed } }): any => feltParsed.map(reduceData))
             .then((datas: any): Earthquake[] =>
                 datas.map(
-                    (data: any): Earthquake => ({
-                        datetime: this.getDatetime(data),
-                        coordinates: this.getCoordinates(data),
-                        depth: this.getDepth(data),
-                        magnitude: this.getMagnitude(data)
-                    })
+                    (data: any): Earthquake => {
+                        const coordinates = this.getCoordinates(data);
+                        return {
+                            datetime: this.getDatetime(data),
+                            latitude: coordinates.latitude,
+                            longitude: coordinates.longitude,
+                            depth: this.getDepth(data),
+                            magnitude: this.getMagnitude(data)
+                        };
+                    }
                 )
             );
     }
