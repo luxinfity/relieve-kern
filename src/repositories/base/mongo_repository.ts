@@ -1,8 +1,8 @@
 import BaseRepository from './base_repository';
-import { IContext, IPagination, IObject } from '../../typings/common';
+import { Context, Pagination, IObject } from '../../typings/common';
 import { offset } from '../../utils/helpers';
 
-type Context = IContext | null;
+type Context = Context | null;
 
 export default class MongoRepo<Model, ModelFillable> extends BaseRepository {
     protected collection: string;

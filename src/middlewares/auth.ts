@@ -3,13 +3,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { HttpError } from 'tymon';
 import JWT from '../libs/jwt';
-import { IContext } from '../typings/common';
+import { Context } from '../typings/common';
 import { ITokenable } from '../typings/auth';
 import { COMMON_ERRORS } from '../utils/constant';
 
 const jwtExpiredMessage = 'jwt expired';
 
-const generateContext = async (payload: ITokenable): Promise<IContext> => {
+const generateContext = async (payload: ITokenable): Promise<Context> => {
     return {
         username: payload.user_id,
         user_id: payload.user_id

@@ -2,11 +2,11 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { HttpError, FirebaseContext } from 'tymon';
-import { IContext } from '../typings/common';
+import { Context } from '../typings/common';
 import { IFirebaseToken } from '../typings/auth';
 import { COMMON_ERRORS } from '../utils/constant';
 
-const generateContext = async (payload: IFirebaseToken): Promise<IContext> => {
+const generateContext = async (payload: IFirebaseToken): Promise<Context> => {
     return {
         email: payload.email,
         phone: payload.phone_number || null,

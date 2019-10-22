@@ -1,35 +1,34 @@
 'use strict';
 
-const tableName = 'users';
+const tableName = 'earthquakes';
 
 module.exports = {
     up: (queryInterface, dataTypes) => queryInterface.createTable(tableName, {
         id: {
-            type: dataTypes.UUID,
-            defaultValue: dataTypes.UUIDV4,
+            type: dataTypes.STRING(255),
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
         },
-        name: {
-            type: dataTypes.STRING(255),
-            allowNull: false
-        },
-        username: {
-            type: dataTypes.STRING(255),
+        datetime: {
+            type: dataTypes.DATE,
             allowNull: false,
             unique: true
         },
-        password: {
-            type: dataTypes.STRING(255),
+        latitude: {
+            type: dataTypes.FLOAT,
             allowNull: false
         },
-        refresh_token: {
-            type: dataTypes.STRING(255),
-            allowNull: true
+        longitude: {
+            type: dataTypes.FLOAT,
+            allowNull: false
         },
-        token_validity: {
-            type: dataTypes.DATE,
-            allowNull: true
+        depth: {
+            type: dataTypes.FLOAT,
+            allowNull: false
+        },
+        magnitude: {
+            type: dataTypes.FLOAT,
+            allowNull: false
         },
         created_at: {
             type: dataTypes.DATE,

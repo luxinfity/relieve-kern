@@ -7,46 +7,46 @@ declare module '*.json' {
 
 declare function require(name: string): any;
 
-export interface IObject {
+export interface ObjectAny {
     [s: string]: any;
 }
 
-export interface IPagination {
+export interface Pagination {
     page: number;
     per_page: number;
     total_page: number;
     total_data: number;
 }
 
-export interface IContext {
+export interface Context {
     email: string;
     phone: string | null;
     user_id: string;
 }
 
-export interface IData {
+export interface Data {
     query: any;
     params: any;
     body: any;
 }
 
-export interface IHandlerOutput {
+export interface HandlerOutput {
     message?: string;
     data?: any;
     status?: number;
-    pagination?: IPagination;
+    pagination?: Pagination;
 }
 
-export type methodHandler = (data: IData, context: IContext) => Promise<IHandlerOutput>;
+export type methodHandler = (data: Data, context: Context) => Promise<HandlerOutput>;
 
-export interface IHttpError {
+export interface HttpError {
     message: string;
     name: string;
     status: number;
     data?: object;
 }
 
-export interface IHttpOutput {
+export interface HttpOutput {
     data?: any;
     meta: {
         code: number;
@@ -55,5 +55,9 @@ export interface IHttpOutput {
         error_type?: string;
         error_data?: any;
     };
-    pagination?: IPagination;
+    pagination?: Pagination;
+}
+
+export interface JobInput<Data = { [s: string]: any }> {
+    data: Data;
 }

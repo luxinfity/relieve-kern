@@ -1,0 +1,88 @@
+import { HttpError } from 'tymon';
+import { Status as Tweet } from 'twitter-d';
+
+import Queue from '../libs/queue';
+import BaseController from './base/base_controller';
+import { Data, Context, HandlerOutput } from '../typings/common';
+import BmkgRepository from '../repositories/bmkg_repository';
+import { isEmptyArray } from '../utils/helpers';
+import { TWITTER_HASHTAG } from '../utils/constant';
+
+export default class EarthquakeController extends BaseController {
+    public async tweetCallback(data: Data, context: Context): Promise<HandlerOutput> {
+        try {
+            const {
+                body: { tweet_create_events: tweets, for_user_id: user_id }
+            }: { body: { for_user_id: string; tweet_create_events: Tweet[] } } = data;
+
+            const filteredTweets = tweets.filter((tweet): boolean => {
+                if (!tweet.entities.hashtags) return false;
+                const hastags = tweet.entities.hashtags.map((item): string => item.text);
+                return hastags.includes(TWITTER_HASHTAG.EARTHQUAKE);
+            });
+
+            if (!isEmptyArray(filteredTweets)) {
+                await Queue.getInstance().dispatch('sync-earthquake');
+            }
+
+            return {
+                message: 'acknowledge'
+            };
+        } catch (err) {
+            if (err.status) throw err;
+            throw HttpError.InternalServerError(err.message);
+        }
+    }
+
+    public async dispatchSyncEarthquake(data: Data, context: Context): Promise<HandlerOutput> {
+        try {
+            await Queue.getInstance().dispatch('sync-earthquake');
+            return {
+                message: 'sync earthquake job dispatched'
+            };
+        } catch (err) {
+            if (err.status) throw err;
+            throw HttpError.InternalServerError(err.message);
+        }
+    }
+
+    public async getLastEarthquake(data: Data, context: Context): Promise<HandlerOutput> {
+        try {
+            const bmkgRepo = new BmkgRepository();
+            const earthquake = await bmkgRepo.getLastEarthquake();
+
+            await Queue.getInstance().dispatch('sync-earthquake', { payload: earthquake });
+
+            return {
+                message: 'last bmkg earthquake retrieved',
+                data: earthquake
+            };
+        } catch (err) {
+            if (err.status) throw err;
+            throw HttpError.InternalServerError(err.message);
+        }
+    }
+
+    public async getLastestEarthquake(data: Data, context: Context): Promise<HandlerOutput> {
+        try {
+            const bmkgRepo = new BmkgRepository();
+            const earthquakes = await bmkgRepo.getLatestEarthquake();
+
+            return {
+                message: 'lastest bmkg earthquake retrieved',
+                data: earthquakes
+            };
+        } catch (err) {
+            if (err.status) throw err;
+            throw HttpError.InternalServerError(err.message);
+        }
+    }
+
+    protected setRoutes(): void {
+        this.addRoute('post', '/callback', this.tweetCallback);
+        this.addRoute('post', '/bmkg/sync', this.dispatchSyncEarthquake);
+
+        this.addRoute('get', '/bmkg/last', this.getLastEarthquake);
+        this.addRoute('get', '/bmkg/lastest', this.getLastestEarthquake);
+    }
+}

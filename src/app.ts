@@ -1,4 +1,4 @@
-import { HttpError, MongoContext, FirebaseContext } from 'tymon';
+import { HttpError, MongoContext, FirebaseContext, DBContext } from 'tymon';
 import { Application } from 'express';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
@@ -9,6 +9,9 @@ import ProfileController from './controllers/profile_controller';
 
 import ExceptionHandler from './middlewares/exception';
 import NotFoundHandler from './middlewares/not_found';
+import EarthquakeController from './controllers/earthquake_controller';
+
+import Queue from './libs/queue';
 
 class App {
     private app: Application;
@@ -26,17 +29,26 @@ class App {
 
     private setupControllers(): void {
         this.app.use('/profile', new ProfileController().getRoutes());
+        this.app.use('/earthquake', new EarthquakeController().getRoutes());
     }
 
     private setupModules(): void {
         HttpError.initialize();
-        MongoContext.initialize({
-            connection_string: String(process.env.MONGO_CONNECTION_STRING),
-            database: 'relieve'
+        DBContext.initialize({
+            connection_string: String(process.env.DB_CONNECTION_STRING),
+            models_path: './src/models'
         });
-        FirebaseContext.initialize({
-            service_account_path: './storage/firebase-service-account.json'
+        Queue.initialize({
+            connection_string: String(process.env.REDIS_CONNECTION_STRING),
+            jobs: ['sync-earthquake']
         });
+        // MongoContext.initialize({
+        //     connection_string: String(process.env.MONGO_CONNECTION_STRING),
+        //     database: 'relieve'
+        // });
+        // FirebaseContext.initialize({
+        //     service_account_path: './storage/firebase-service-account.json'
+        // });
     }
 
     private setupPlugins(): void {
