@@ -36,7 +36,7 @@ class App {
         HttpError.initialize();
         Queue.initialize({
             connection_string: String(process.env.REDIS_CONNECTION_STRING),
-            jobs: ['eat', 'drink', 'sleep']
+            jobs: ['sync-earthquake']
         });
         // MongoContext.initialize({
         //     connection_string: String(process.env.MONGO_CONNECTION_STRING),

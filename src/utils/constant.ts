@@ -11,6 +11,10 @@ export const BMKG_URL = {
     LATEST_EARTHQUAKE: 'http://data.bmkg.go.id/gempaterkini.xml'
 };
 
+export const TWITTER_HASHTAG = {
+    EARTHQUAKE: 'Gempa'
+};
+
 export default {
     COMMON_ERRORS,
     BMKG_URL

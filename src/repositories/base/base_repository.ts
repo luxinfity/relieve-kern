@@ -1,17 +1,15 @@
 import { DBContext, MongoContext, RedisContext, FirebaseContext, ElasticContext } from 'tymon';
 import { Context } from '../../typings/common';
 
-type Context = Context | null;
-
 export class BaseRepository {
-    public context: Context;
+    public context: Context | null;
     private db: any = null;
     private mongo: any = null;
     private redis: any = null;
     private firebase: any = null;
     private elastic: any = null;
 
-    public constructor(context: Context = null) {
+    public constructor(context: Context | null = null) {
         this.context = context;
     }
 

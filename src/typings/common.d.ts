@@ -57,3 +57,7 @@ export interface HttpOutput {
     };
     pagination?: Pagination;
 }
+
+export interface JobInput<Data = { [s: string]: any }> {
+    data: Data;
+}
