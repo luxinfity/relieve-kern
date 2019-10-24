@@ -22,7 +22,14 @@ export default async (req: Request, res: Response, next: NextFunction): Promise<
         }
 
         const admin = await FirebaseContext.getInstance();
-        const payload = await admin.auth().verifyIdToken(idToken);
+
+        let payload: any;
+        try {
+            payload = await admin.auth().verifyIdToken(idToken);
+        } catch (error) {
+            throw HttpError.NotAuthorized('token invalid', COMMON_ERRORS.TOKEN_INVALID);
+        }
+
         req.context = await generateContext(payload);
 
         return next();

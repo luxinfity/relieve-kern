@@ -9,6 +9,8 @@ import { isEmptyArray } from '../utils/helpers';
 import { TWITTER_HASHTAG, JOBS } from '../utils/constant';
 import EarthquakeRepository from '../repositories/earthquake_repo';
 import Validator from '../middlewares/request_validator';
+import FirebaseAuth from '../middlewares/firebase-auth';
+import Guard from '../middlewares/guard';
 
 export default class EarthquakeController extends BaseController {
     public async twitterCallback(data: Data, context: Context): Promise<HandlerOutput> {
@@ -102,12 +104,12 @@ export default class EarthquakeController extends BaseController {
     }
 
     protected setRoutes(): void {
-        this.addRoute('post', '/callback', this.twitterCallback);
-        this.addRoute('post', '/bmkg/sync', this.dispatchSyncEarthquake);
+        this.addRoute('post', '/callback', this.twitterCallback, Guard);
+        this.addRoute('post', '/bmkg/sync', this.dispatchSyncEarthquake, Guard);
 
-        this.addRoute('get', '/bmkg/last', this.getLastEarthquake);
-        this.addRoute('get', '/bmkg/lastest', this.getLastestEarthquake);
+        this.addRoute('get', '/bmkg/last', this.getLastEarthquake, Guard);
+        this.addRoute('get', '/bmkg/lastest', this.getLastestEarthquake, Guard);
 
-        this.addRoute('get', '/', this.getEarthquakeList, Validator('eartquakeList'));
+        this.addRoute('get', '/', this.getEarthquakeList, [FirebaseAuth, Validator('eartquakeList')]);
     }
 }
