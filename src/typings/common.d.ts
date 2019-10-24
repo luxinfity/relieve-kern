@@ -61,3 +61,7 @@ export interface HttpOutput {
 export interface JobInput<Data = { [s: string]: any }> {
     data: Data;
 }
+
+export type MakeAny<T> = {
+    [P in keyof T]?: any;
+};
