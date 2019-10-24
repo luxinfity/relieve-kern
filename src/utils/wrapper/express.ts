@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { OK } from 'http-status-codes';
-import { Context, Data, methodHandler, HttpOutput, HandlerOutput } from '../../typings/common';
+import { Context, Data, methodHandler, HandlerOutput } from '../../typings/common';
 
 const parseInput = (req: Request): Data => ({
     query: req.query,

@@ -6,10 +6,10 @@ import BaseController from './base/base_controller';
 import { Data, Context, HandlerOutput } from '../typings/common';
 import BmkgRepository from '../repositories/bmkg_repository';
 import { isEmptyArray } from '../utils/helpers';
-import { TWITTER_HASHTAG } from '../utils/constant';
+import { TWITTER_HASHTAG, JOBS } from '../utils/constant';
 
 export default class EarthquakeController extends BaseController {
-    public async tweetCallback(data: Data, context: Context): Promise<HandlerOutput> {
+    public async twitterCallback(data: Data, context: Context): Promise<HandlerOutput> {
         try {
             const {
                 body: { tweet_create_events: tweets, for_user_id: user_id }
@@ -22,7 +22,7 @@ export default class EarthquakeController extends BaseController {
             });
 
             if (!isEmptyArray(filteredTweets)) {
-                await Queue.getInstance().dispatch('sync-earthquake');
+                await Queue.getInstance().dispatch(JOBS.SYNC_EARTHQUAKE);
             }
 
             return {
@@ -36,7 +36,7 @@ export default class EarthquakeController extends BaseController {
 
     public async dispatchSyncEarthquake(data: Data, context: Context): Promise<HandlerOutput> {
         try {
-            await Queue.getInstance().dispatch('sync-earthquake');
+            await Queue.getInstance().dispatch(JOBS.SYNC_EARTHQUAKE);
             return {
                 message: 'sync earthquake job dispatched'
             };
@@ -78,8 +78,20 @@ export default class EarthquakeController extends BaseController {
         }
     }
 
+    /** mobile app  */
+    public async earthquakeList(data: Data, context: Context): Promise<HandlerOutput> {
+        try {
+            return {
+                message: 'sync earthquake job dispatched'
+            };
+        } catch (err) {
+            if (err.status) throw err;
+            throw HttpError.InternalServerError(err.message);
+        }
+    }
+
     protected setRoutes(): void {
-        this.addRoute('post', '/callback', this.tweetCallback);
+        this.addRoute('post', '/callback', this.twitterCallback);
         this.addRoute('post', '/bmkg/sync', this.dispatchSyncEarthquake);
 
         this.addRoute('get', '/bmkg/last', this.getLastEarthquake);

@@ -12,6 +12,7 @@ import NotFoundHandler from './middlewares/not_found';
 import EarthquakeController from './controllers/earthquake_controller';
 
 import Queue from './libs/queue';
+import { JOBS } from './utils/constant';
 
 class App {
     private app: Application;
@@ -38,17 +39,17 @@ class App {
             connection_string: String(process.env.DB_CONNECTION_STRING),
             models_path: './src/models'
         });
-        Queue.initialize({
-            connection_string: String(process.env.REDIS_CONNECTION_STRING),
-            jobs: ['sync-earthquake']
-        });
         // MongoContext.initialize({
         //     connection_string: String(process.env.MONGO_CONNECTION_STRING),
         //     database: 'relieve'
         // });
-        // FirebaseContext.initialize({
-        //     service_account_path: './storage/firebase-service-account.json'
-        // });
+        FirebaseContext.initialize({
+            service_account_path: './storage/firebase-service-account.json'
+        });
+        Queue.initialize({
+            connection_string: String(process.env.REDIS_CONNECTION_STRING),
+            jobs: [JOBS.SYNC_EARTHQUAKE, JOBS.NOTIFY_EARTHQUAKE]
+        });
     }
 
     private setupPlugins(): void {

@@ -15,6 +15,11 @@ export const TWITTER_HASHTAG = {
     EARTHQUAKE: 'Gempa'
 };
 
+export const JOBS = {
+    SYNC_EARTHQUAKE: 'sync-earthquake',
+    NOTIFY_EARTHQUAKE: 'notify-earthquake'
+};
+
 export default {
     COMMON_ERRORS,
     BMKG_URL
