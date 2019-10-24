@@ -2,11 +2,26 @@ import * as Joi from '@hapi/joi';
 import { HttpError } from 'tymon';
 import { COMMON_ERRORS } from '../utils/constant';
 
+const PAGINATION = {
+    page: Joi.number()
+        .integer()
+        .positive()
+        .default(1)
+        .optional(),
+    per_page: Joi.number()
+        .integer()
+        .positive()
+        .default(10)
+        .optional(),
+    sort: Joi.string()
+        .optional()
+        .default('-created_at')
+};
+
 const schemas: { [s: string]: Joi.ObjectSchema } = {
-    login: Joi.object({
-        body: Joi.object({
-            username: Joi.string().required(),
-            password: Joi.string().required()
+    eartquakeList: Joi.object({
+        query: Joi.object({
+            ...PAGINATION
         }).required()
     })
 };

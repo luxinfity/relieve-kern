@@ -7,6 +7,8 @@ import { Data, Context, HandlerOutput } from '../typings/common';
 import BmkgRepository from '../repositories/bmkg_repository';
 import { isEmptyArray } from '../utils/helpers';
 import { TWITTER_HASHTAG, JOBS } from '../utils/constant';
+import EarthquakeRepository from '../repositories/earthquake_repo';
+import Validator from '../middlewares/request_validator';
 
 export default class EarthquakeController extends BaseController {
     public async twitterCallback(data: Data, context: Context): Promise<HandlerOutput> {
@@ -79,10 +81,19 @@ export default class EarthquakeController extends BaseController {
     }
 
     /** mobile app  */
-    public async earthquakeList(data: Data, context: Context): Promise<HandlerOutput> {
+    public async getEarthquakeList(data: Data, context: Context): Promise<HandlerOutput> {
+        const {
+            query: { page, per_page, sort }
+        } = data;
+
+        const earthquakeRepo = new EarthquakeRepository(context);
+        const { data: earthquakes, meta } = await earthquakeRepo.paginate({}, { page, per_page, sort });
+
         try {
             return {
-                message: 'sync earthquake job dispatched'
+                message: 'earthquake list retrieved',
+                data: earthquakes,
+                pagination: meta
             };
         } catch (err) {
             if (err.status) throw err;
@@ -96,5 +107,7 @@ export default class EarthquakeController extends BaseController {
 
         this.addRoute('get', '/bmkg/last', this.getLastEarthquake);
         this.addRoute('get', '/bmkg/lastest', this.getLastestEarthquake);
+
+        this.addRoute('get', '/', this.getEarthquakeList, Validator('eartquakeList'));
     }
 }
