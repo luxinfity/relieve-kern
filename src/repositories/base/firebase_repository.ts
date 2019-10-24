@@ -1,10 +1,8 @@
 import BaseRepository from './base_repository';
-import { Context, Pagination, IObject } from '../../typings/common';
+import { Context, Pagination } from '../../typings/common';
 import { offset } from '../../utils/helpers';
 
-type Context = Context | null;
-
-export default class FirebaseRepo<Model, ModelFillable> extends BaseRepository {
+export default class FirebaseRepo<Model> extends BaseRepository {
     protected ref: string;
 
     public constructor(ref: string, context?: Context) {
@@ -21,13 +19,13 @@ export default class FirebaseRepo<Model, ModelFillable> extends BaseRepository {
             .then((res: any): Model => res.val());
     }
 
-    public async create(id: string, data: ModelFillable): Promise<Model> {
+    public async create(id: string, data: Partial<Model>): Promise<Model> {
         const fb = await this.getFirebaseInstance();
         const db = await fb.database();
         return db.ref(`${this.ref}${id}`).set(data);
     }
 
-    public async update(id: string, data: ModelFillable): Promise<Model> {
+    public async update(id: string, data: Partial<Model>): Promise<Model> {
         const fb = await this.getFirebaseInstance();
         const db = await fb.database();
         return db.ref(`${this.ref}/${id}`).update(data);
