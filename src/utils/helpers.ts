@@ -44,6 +44,14 @@ export const sorter = (sort: string = '-created_at'): string[] => {
     return [sortString, sortMethod];
 };
 
+export const splitCoordinate = (coordinate: string): { latitude: number; longitude: number } => {
+    const [lat, lng] = coordinate.split(',');
+    return {
+        latitude: +lat,
+        longitude: +lng
+    };
+};
+
 export default {
     parseDataObject,
     offset,

@@ -18,10 +18,25 @@ const PAGINATION = {
         .default('-created_at')
 };
 
+const OPTIONAL_STRING = Joi.string()
+    .optional()
+    .allow('', null)
+    .default(null);
+
 const schemas: { [s: string]: Joi.ObjectSchema } = {
     eartquakeList: Joi.object({
         query: Joi.object({
             ...PAGINATION
+        }).required()
+    }),
+    updateState: Joi.object({
+        body: Joi.object({
+            fcm_token: OPTIONAL_STRING,
+            coordinates: OPTIONAL_STRING,
+            notify: Joi.boolean().default(true),
+            status: Joi.number()
+                .integer()
+                .default(0)
         }).required()
     })
 };
