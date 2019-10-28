@@ -1,11 +1,11 @@
 import { FirebaseContext } from 'tymon';
 import * as Bluebird from 'bluebird';
 
+import StateRepository from '../repositories/state_repository';
+import { stringifyObjectKey } from '../utils/helpers';
 import { JobInput } from 'src/typings/common';
 import { Earthquake } from 'src/typings/models/earthquake';
-import StateRepository from '../repositories/state_repository';
 import { State } from 'src/typings/state';
-import { stringifyObjectKey } from 'src/utils/helpers';
 
 const notifyUser = async (messager: any, user: State, earthquake: Earthquake): Promise<void> => {
     await messager().sendToDevice(user.fcm_token, stringifyObjectKey(earthquake), {
