@@ -20,6 +20,10 @@ export const JOBS = {
     NOTIFY_EARTHQUAKE: 'notify-earthquake'
 };
 
+export const TOPICS = {
+    EARTHQUAKE: 'earthquake'
+};
+
 export default {
     COMMON_ERRORS,
     BMKG_URL
