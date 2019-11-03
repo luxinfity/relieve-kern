@@ -44,7 +44,7 @@ class App {
         //     database: 'relieve'
         // });
         FirebaseContext.initialize({
-            service_account_path: './storage/firebase-service-account.json'
+            service_account_path: String(process.env.FIREBASE_SERVICE_ACCOUNT_PATH)
         });
         Queue.initialize({
             connection_string: String(process.env.REDIS_CONNECTION_STRING),
