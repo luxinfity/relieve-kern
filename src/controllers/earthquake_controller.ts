@@ -1,34 +1,33 @@
 import { HttpError } from 'tymon';
+import { Status as Tweet } from 'twitter-d';
 
 import Queue from '../libs/queue';
 import BaseController from './base/base_controller';
 import { Data, Context, HandlerOutput } from '../typings/common';
 import BmkgRepository from '../repositories/bmkg_repository';
-// import { isEmptyArray } from '../utils/helpers';
-import { JOBS } from '../utils/constant';
+import { isEmptyArray } from '../utils/helpers';
+import { TWITTER_HASHTAG, JOBS } from '../utils/constant';
 import EarthquakeRepository from '../repositories/earthquake_repo';
 import Validator from '../middlewares/request_validator';
 import FirebaseAuth from '../middlewares/firebase-auth';
 import Guard from '../middlewares/guard';
 
 export default class EarthquakeController extends BaseController {
-    public async callback(data: Data, context: Context): Promise<HandlerOutput> {
+    public async twitterCallback(data: Data, context: Context): Promise<HandlerOutput> {
         try {
-            // const {
-            //     body: { tweet_create_events: tweets, for_user_id: user_id }
-            // }: { body: { for_user_id: string; tweet_create_events: Tweet[] } } = data;
+            const {
+                body: { tweet_create_events: tweets, for_user_id: user_id }
+            }: { body: { for_user_id: string; tweet_create_events: Tweet[] } } = data;
 
-            // const filteredTweets = tweets.filter((tweet): boolean => {
-            //     if (!tweet.entities.hashtags) return false;
-            //     const hastags = tweet.entities.hashtags.map((item): string => item.text);
-            //     return hastags.includes(TWITTER_HASHTAG.EARTHQUAKE);
-            // });
+            const filteredTweets = tweets.filter((tweet): boolean => {
+                if (!tweet.entities.hashtags) return false;
+                const hastags = tweet.entities.hashtags.map((item): string => item.text);
+                return hastags.includes(TWITTER_HASHTAG.EARTHQUAKE);
+            });
 
-            // if (!isEmptyArray(filteredTweets)) {
-            //     ;
-            // }
-
-            await Queue.getInstance().dispatch(JOBS.SYNC_EARTHQUAKE);
+            if (!isEmptyArray(filteredTweets)) {
+                await Queue.getInstance().dispatch(JOBS.SYNC_EARTHQUAKE);
+            }
 
             return {
                 message: 'acknowledge'
@@ -105,7 +104,7 @@ export default class EarthquakeController extends BaseController {
     }
 
     protected setRoutes(): void {
-        this.addRoute('post', '/callback', this.callback, Guard);
+        this.addRoute('post', '/callback', this.twitterCallback, Guard);
         this.addRoute('post', '/bmkg/sync', this.dispatchSyncEarthquake, Guard);
 
         this.addRoute('get', '/bmkg/last', this.getLastEarthquake, Guard);
