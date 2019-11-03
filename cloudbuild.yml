@@ -1,0 +1,14 @@
+steps:
+  - name: "gcr.io/cloud-builders/gsutil"
+    args: ["cp", "gs://aai-environments/relieve/api-env", "./.env"]
+
+  - name: "gcr.io/cloud-builders/gsutil"
+    args:
+      ["cp", "gs://aai-environments/relieve/relieve-firebase-account.json	", "."]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      ["build", "-t", "gcr.io/archisdi/github.com/archisdi/relieve-kern", "."]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/archisdi/github.com/archisdi/relieve-kern"]
