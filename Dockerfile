@@ -19,5 +19,5 @@ RUN cp ./.env ./build
 FROM node:10-alpine as release
 COPY --from=builder ./usr/src/app/build .
 
-EXPOSE 3020
+EXPOSE 3040
 CMD [ "node", "./src/server.js" ]
