@@ -14,9 +14,8 @@ const handleEarthquake = (earthquake: Earthquake, repo: EarthquakeRepository): P
                     Queue.getInstance().dispatch(JOBS.NOTIFY_EARTHQUAKE, { payload: earthquake }),
                     repo.create(earthquake)
                 ]);
-            } else {
-                return repo.update({ datetime: earthquake.datetime }, earthquake);
             }
+            return Promise.resolve();
         }
     );
 };
