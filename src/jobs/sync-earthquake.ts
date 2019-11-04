@@ -1,19 +1,27 @@
 import * as Bluebird from 'bluebird';
+import { FirebaseContext } from 'tymon';
 
 import BmkgRepository from '../repositories/bmkg_repository';
 import EarthquakeRepository from '../repositories/earthquake_repo';
-import Queue from '../libs/queue';
-import { JOBS } from '../utils/constant';
+
+import { TOPICS } from '../utils/constant';
 import { Earthquake } from 'src/typings/models/earthquake';
+import { stringifyObjectKey } from '../utils/helpers';
+
+const notifyEarthquake = async (earthquake: Earthquake): Promise<void> => {
+    const messager = await FirebaseContext.getInstance().messaging();
+    await messager.send({
+        notification: { title: 'Earthquake Alert', body: 'an earthquake happened' },
+        data: stringifyObjectKey(earthquake),
+        topic: TOPICS.EARTHQUAKE
+    });
+};
 
 const handleEarthquake = (earthquake: Earthquake, repo: EarthquakeRepository): Promise<any> => {
     return repo.findOne({ datetime: earthquake.datetime }).then(
         (isExsist): Promise<any> => {
             if (!isExsist) {
-                return Promise.all([
-                    Queue.getInstance().dispatch(JOBS.NOTIFY_EARTHQUAKE, { payload: earthquake }),
-                    repo.create(earthquake)
-                ]);
+                return Promise.all([notifyEarthquake(earthquake), repo.create(earthquake)]);
             }
             return Promise.resolve();
         }

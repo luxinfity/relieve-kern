@@ -48,7 +48,7 @@ class App {
         });
         Queue.initialize({
             connection_string: String(process.env.REDIS_CONNECTION_STRING),
-            jobs: [JOBS.SYNC_EARTHQUAKE, JOBS.NOTIFY_EARTHQUAKE]
+            jobs: [JOBS.SYNC_EARTHQUAKE]
         });
     }
 
