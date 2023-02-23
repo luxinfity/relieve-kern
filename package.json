@@ -65,7 +65,7 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
     "randomstring": "^1.1.5",
-    "sequelize": "^5.10.1",
+    "sequelize": "^6.28.2",
     "tymon": "git+https://github.com/archisdi/tymon.git",
     "uuid": "^3.3.3",
     "xml2js": "^0.4.22"
